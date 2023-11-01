@@ -1,0 +1,19 @@
+pkgname = "db"
+output = "db"
+wipe = true                 # 前回生成したコードを毎回削除
+add-global-variants = false # グローバル構造体を使用する関数を生成するか
+no-tests = true             # テストコードを作成するか
+
+[mysql]
+dbname = "gacha-demo"
+host = "localhost"
+port = 3306
+user = "root"
+pass = "mysql"
+sslmode = "false"
+
+[aliases.tables.gachas]
+up_plural = "Gachas"
+up_singular = "Gacha"
+down_plural = "gachas"
+down_singular = "gacha"
