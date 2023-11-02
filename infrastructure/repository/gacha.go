@@ -1,4 +1,4 @@
-package infrastructure
+package repository
 
 import (
 	"context"
@@ -10,36 +10,39 @@ import (
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )
 
-type GachaRepostory struct {
+type Gacha struct {
 	exec boil.ContextExecutor
 }
 
-func NewGachaRepository(db *sql.DB) *GachaRepostory {
-	return &GachaRepostory{db}
+func NewGacha(db *sql.DB) *Gacha {
+	return &Gacha{db}
 }
 
-func (g *GachaRepostory) GetGachaItemWeights(ctx context.Context, gid int) (domain.GachaItemWeights, error) {
+func (g *Gacha) GetGachaItemWeights(ctx context.Context, gid domain.GachaId) (domain.GachaItemWeights, error) {
 	gachaItems, err := db.GachaItems(
 		qm.Select(db.GachaItemColumns.ItemID, db.GachaItemColumns.Weight),
-		db.GachaItemWhere.GachaID.EQ(gid),
+		db.GachaItemWhere.GachaID.EQ(gid.Value()),
 	).All(ctx, g.exec)
 
 	if err != nil {
 		return nil, err
 	}
 
+	return convertGachaItemWeights(gachaItems), nil
+}
+
+func convertGachaItemWeights(gachaItems db.GachaItemSlice) domain.GachaItemWeights {
 	gachaItemWeights := make(domain.GachaItemWeights, len(gachaItems))
 	for i, item := range gachaItems {
 		gachaItemWeights[i] = struct {
 			ItemId domain.ItemId
 			Weight int
 		}{
-			ItemId: domain.ItemId(item.ItemID),
+			ItemId: domain.NewItemId(item.ItemID),
 			Weight: item.Weight,
 		}
 	}
-
-	return gachaItemWeights, nil
+	return gachaItemWeights
 }
 
 // type GachaItem struct {

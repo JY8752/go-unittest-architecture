@@ -8,7 +8,7 @@ package main
 
 import (
 	"database/sql"
-	"github.com/JY8752/go-unittest-architecture/infrastructure"
+	"github.com/JY8752/go-unittest-architecture/infrastructure/repository"
 	"github.com/JY8752/go-unittest-architecture/presentation/controller"
 	"github.com/JY8752/go-unittest-architecture/presentation/handler"
 	"github.com/labstack/echo/v4"
@@ -21,9 +21,10 @@ import (
 // Injectors from wire.go:
 
 func InitializeRootHandler(db *sql.DB, e *echo.Echo) *handler.Root {
-	gachaRepostory := infrastructure.NewGachaRepository(db)
-	gacha := controller.NewGacha(gachaRepostory)
-	handlerGacha := handler.NewGacha(e, gacha)
+	gacha := repository.NewGacha(db)
+	item := repository.NewItem(db)
+	controllerGacha := controller.NewGacha(gacha, item)
+	handlerGacha := handler.NewGacha(e, controllerGacha)
 	root := handler.NewRoot(handlerGacha)
 	return root
 }

@@ -4,33 +4,42 @@ import (
 	"context"
 
 	"github.com/JY8752/go-unittest-architecture/domain"
-	"github.com/JY8752/go-unittest-architecture/infrastructure"
+	"github.com/JY8752/go-unittest-architecture/infrastructure/repository"
 )
 
 type Gacha struct {
-	gachaRep *infrastructure.GachaRepostory
+	gachaRep *repository.Gacha
+	itemRep  *repository.Item
 }
 
-func NewGacha(gachaRep *infrastructure.GachaRepostory) *Gacha {
-	return &Gacha{gachaRep}
+func NewGacha(gachaRep *repository.Gacha, itemRep *repository.Item) *Gacha {
+	return &Gacha{gachaRep, itemRep}
 }
 
-func (g *Gacha) Draw(ctx context.Context, gachaId int) (*domain.Item, error) {
+func (g *Gacha) Draw(ctx context.Context, gachaId domain.GachaId) (*domain.Item, error) {
+	// 指定ガチャの重み一覧を取得
 	weights, err := g.gachaRep.GetGachaItemWeights(ctx, gachaId)
 	if err != nil {
 		return nil, err
 	}
 
-	gacha := domain.Gacha{Weights: weights}
+	gacha := domain.NewGacha(weights)
+	sg := domain.NewSeedGenerator()
+	seed := sg.New()
 
-	_, err = gacha.Draw()
+	// ビジネスロジック ガチャの抽選
+	itemId, err := gacha.Draw(seed)
 	if err != nil {
 		return nil, err
 	}
 
-	// 決済する
+	// 抽選したアイテム情報を取得
+	item, err := g.itemRep.FindById(ctx, *itemId)
+	if err != nil {
+		return nil, err
+	}
 
-	// 抽選したアイテムを記録する
+	// 管理下にないプロセス外依存 決済する
 
-	return nil, err
+	return item, err
 }
