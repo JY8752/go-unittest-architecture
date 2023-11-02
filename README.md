@@ -7,20 +7,76 @@
 例の如くガチャのシュミレーションAPIを作成する。
 
 - ガチャを抽選する(ランダム性のテスト)
-- ガチャにアイテムを追加する(プロセス外依存を含んだテスト)
+- ガチャの決済APIを呼び出す(プロセス外依存を含んだテスト)
+
+### Architecture
+
+<img src="./docs/architecture.png" alt="アーキテクチャー図" />
+
+### DB
+
+<img src="./docs/ER.png" alt="ER図"/>
+
+### EndPoint
+
+#### ```/gacha/:gachaId/draw```
+
+指定のガチャからアイテムを抽選する。
+
+##### パスパラメーター
+
+- gachaId ガチャID
+
+##### HTTP メソッド
+
+POST
+
+##### Response
+
+```
+% curl -XPOST localhost:8080/gacha/1/draw | jq
+{
+  "id": {
+    "value": 2
+  },
+  "name": "item2",
+  "rarity": "N"
+}
+```
+
+## 作成するテスト
+
+### 単体テスト
+
+- ガチャの抽選ロジック
+
+### 結合テスト
+
+以下の一連の呼び出しをテスト
+- ガチャデータの取得 -> ガチャの抽選 -> 抽選したアイテムデータの取得 -> (決済APIの呼び出し)
+
+### E2E
+
+ゴールデンテストを使用してAPIリクエストからレスポンス取得までの一連の流れをテスト
 
 ## stack
 
-- wire
-- [sqlboiler](https://github.com/volatiletech/sqlboiler)
-- [golang-migtate](https://github.com/golang-migrate/migrate)
+- [wire](https://github.com/google/wire) 依存性の解決
+- [sqlboiler](https://github.com/volatiletech/sqlboiler) ORM
+- [golang-migtate](https://github.com/golang-migrate/migrate) マイグレーション
+- [Taskfile](https://taskfile.dev/ja-JP/) タスクランナー
+- dotenv + direnv 環境変数の管理
 
-### DB task
+- Go1.20
+- MySql
+- docker
+
+### wire
+
+#### install
 
 ```
-task db:create
-task db:connect
-task db:stop
+go install github.com/google/wire/cmd/wire@latest
 ```
 
 ### golang-migrate
@@ -31,14 +87,6 @@ task db:stop
 brew install golang-migrate
 ```
 
-#### task
-
-```
-task migrate:create -- create_gacha_table
-task migrate:up
-task migrate:down
-```
-
 ### sqlbiler
 
 #### install
@@ -47,3 +95,28 @@ task migrate:down
 go install github.com/volatiletech/sqlboiler/v4@latest
 go install github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-mysql@latest
 ```
+
+### Taskfile
+
+#### install
+
+```
+brew install go-task
+```
+
+## Task
+
+```
+% task
+task: Available tasks for this project:
+* hello:                 Hello Test Task.
+* db:connect:            Connect MySQL container.
+* db:run:                Run MySQL container.
+* db:stop:               Stop MySQL container.When stop, container remove.
+* migrate:create:        Create migration file.Migration name must be specified as an argument.ex) task migrate:create -- create_user_table
+* migrate:down:          Execution migration down.
+* migrate:force:         Execute force migration version.Migration version must be specified as an argument.ex)task migrate:force -- 2
+* migrate:up:            Execution migration up.
+* migrate:version:       Check current migration version.
+```
+
