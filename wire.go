@@ -6,6 +6,7 @@ import (
 	"database/sql"
 
 	"github.com/JY8752/go-unittest-architecture/controller"
+	"github.com/JY8752/go-unittest-architecture/domain"
 	"github.com/JY8752/go-unittest-architecture/infrastructure/handler"
 	"github.com/JY8752/go-unittest-architecture/infrastructure/repository"
 	"github.com/google/wire"
@@ -16,6 +17,7 @@ func InitializeRootHandler(db *sql.DB, e *echo.Echo) *handler.Root {
 	wire.Build(
 		repository.NewGacha,
 		repository.NewItem,
+		domain.NewSeedGenerator,
 		controller.NewGacha,
 		handler.NewGacha,
 		handler.NewRoot,

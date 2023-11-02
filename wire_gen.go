@@ -9,6 +9,7 @@ package main
 import (
 	"database/sql"
 	"github.com/JY8752/go-unittest-architecture/controller"
+	"github.com/JY8752/go-unittest-architecture/domain"
 	"github.com/JY8752/go-unittest-architecture/infrastructure/handler"
 	"github.com/JY8752/go-unittest-architecture/infrastructure/repository"
 	"github.com/labstack/echo/v4"
@@ -23,7 +24,8 @@ import (
 func InitializeRootHandler(db *sql.DB, e *echo.Echo) *handler.Root {
 	gacha := repository.NewGacha(db)
 	item := repository.NewItem(db)
-	controllerGacha := controller.NewGacha(gacha, item)
+	seedGenerator := domain.NewSeedGenerator()
+	controllerGacha := controller.NewGacha(gacha, item, seedGenerator)
 	handlerGacha := handler.NewGacha(e, controllerGacha)
 	root := handler.NewRoot(handlerGacha)
 	return root

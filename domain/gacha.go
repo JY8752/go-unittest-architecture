@@ -3,7 +3,6 @@ package domain
 import (
 	"errors"
 	"math/rand"
-	"time"
 )
 
 // value object
@@ -13,21 +12,6 @@ type GachaId struct {
 
 func NewGachaId(v int) GachaId {
 	return GachaId{ValueObject[int]{v}}
-}
-
-// collaborator
-type SeedGenerator interface {
-	New() int64
-}
-
-type seedGenerator struct{}
-
-func NewSeedGenerator() SeedGenerator {
-	return &seedGenerator{}
-}
-
-func (s *seedGenerator) New() int64 {
-	return time.Now().UnixNano()
 }
 
 // domain model
@@ -44,7 +28,7 @@ func NewGacha(weights GachaItemWeights) *Gacha {
 	return &Gacha{weights}
 }
 
-func (g *Gacha) Draw(seed int64) (*ItemId, error) {
+func (g *Gacha) Draw(seed int64) (ItemId, error) {
 	weights := make([]int, len(g.Weights))
 	for i, w := range g.Weights {
 		weights[i] = w.Weight
@@ -52,10 +36,10 @@ func (g *Gacha) Draw(seed int64) (*ItemId, error) {
 
 	index, err := linearSearchLottery(weights, seed)
 	if err != nil {
-		return nil, err
+		return NewItemId(0), err
 	}
 
-	return &g.Weights[index].ItemId, nil
+	return g.Weights[index].ItemId, nil
 }
 
 /*
@@ -78,7 +62,7 @@ func linearSearchLottery(weights []int, seed int64) (int, error) {
 		// 現在要素までの重みの総和
 		currentWeight += w
 
-		if rnd <= currentWeight {
+		if rnd < currentWeight {
 			return i, nil
 		}
 	}

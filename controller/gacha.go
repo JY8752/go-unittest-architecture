@@ -8,12 +8,13 @@ import (
 )
 
 type Gacha struct {
-	gachaRep *repository.Gacha
-	itemRep  *repository.Item
+	gachaRep      *repository.Gacha
+	itemRep       *repository.Item
+	seedGenerator domain.SeedGenerator
 }
 
-func NewGacha(gachaRep *repository.Gacha, itemRep *repository.Item) *Gacha {
-	return &Gacha{gachaRep, itemRep}
+func NewGacha(gachaRep *repository.Gacha, itemRep *repository.Item, seedGenerator domain.SeedGenerator) *Gacha {
+	return &Gacha{gachaRep, itemRep, seedGenerator}
 }
 
 func (g *Gacha) Draw(ctx context.Context, gachaId domain.GachaId) (*domain.Item, error) {
@@ -24,8 +25,7 @@ func (g *Gacha) Draw(ctx context.Context, gachaId domain.GachaId) (*domain.Item,
 	}
 
 	gacha := domain.NewGacha(weights)
-	sg := domain.NewSeedGenerator()
-	seed := sg.New()
+	seed := g.seedGenerator.New()
 
 	// ビジネスロジック ガチャの抽選
 	itemId, err := gacha.Draw(seed)
@@ -34,7 +34,7 @@ func (g *Gacha) Draw(ctx context.Context, gachaId domain.GachaId) (*domain.Item,
 	}
 
 	// 抽選したアイテム情報を取得
-	item, err := g.itemRep.FindById(ctx, *itemId)
+	item, err := g.itemRep.FindById(ctx, itemId)
 	if err != nil {
 		return nil, err
 	}
