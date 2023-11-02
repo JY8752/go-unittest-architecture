@@ -11,8 +11,5 @@ func (v ValueObject[T]) Value() T {
 }
 
 func (v *ValueObject[T]) MarshalJSON() ([]byte, error) {
-	type pubValueObject[T any] struct {
-		Value T `json:"value"`
-	}
-	return json.Marshal(&pubValueObject[T]{Value: v.value})
+	return json.Marshal(v.value)
 }
