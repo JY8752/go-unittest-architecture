@@ -5,11 +5,6 @@ add-global-variants = false # グローバル構造体を使用する関数を�
 no-tests = true             # テストコードを作成するか
 
 [mysql]
-# dbname = "gacha-demo"
-# host = "localhost"
-# port = 3306
-# user = "root"
-# pass = "mysql"
 sslmode = "false"
 
 [aliases.tables.gachas]

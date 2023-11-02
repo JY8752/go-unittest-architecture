@@ -4,17 +4,10 @@ go 1.20
 
 require (
 	github.com/friendsofgo/errors v0.9.2
+	github.com/google/wire v0.5.0
 	github.com/labstack/echo/v4 v4.11.2
 	github.com/volatiletech/sqlboiler/v4 v4.15.0
 	github.com/volatiletech/strmangle v0.0.5
-)
-
-require (
-	github.com/google/subcommands v1.0.1 // indirect
-	github.com/google/wire v0.5.0 // indirect
-	github.com/pmezard/go-difflib v1.0.0 // indirect
-	golang.org/x/mod v0.8.0 // indirect
-	golang.org/x/tools v0.6.0 // indirect
 )
 
 require (
