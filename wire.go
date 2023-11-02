@@ -5,9 +5,9 @@ package main
 import (
 	"database/sql"
 
+	"github.com/JY8752/go-unittest-architecture/controller"
+	"github.com/JY8752/go-unittest-architecture/infrastructure/handler"
 	"github.com/JY8752/go-unittest-architecture/infrastructure/repository"
-	"github.com/JY8752/go-unittest-architecture/presentation/controller"
-	"github.com/JY8752/go-unittest-architecture/presentation/handler"
 	"github.com/google/wire"
 	"github.com/labstack/echo/v4"
 )
