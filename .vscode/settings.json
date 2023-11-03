@@ -1,6 +1,6 @@
 {
   "gopls": {
-    "build.buildFlags": ["-tags=unit,integration,e2e"]
+    "build.buildFlags": ["-tags=unit,integration,e2e,wireinject"]
   },
   "go.testTags": "-tags=unit,integration,e2e",
 }

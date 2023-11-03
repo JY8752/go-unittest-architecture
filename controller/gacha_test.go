@@ -12,6 +12,7 @@ import (
 	"github.com/JY8752/go-unittest-architecture/controller"
 	"github.com/JY8752/go-unittest-architecture/domain"
 	"github.com/JY8752/go-unittest-architecture/infrastructure/repository"
+	mock_api "github.com/JY8752/go-unittest-architecture/mocks/api"
 	mock_domain "github.com/JY8752/go-unittest-architecture/mocks/domain"
 	"github.com/JY8752/go-unittest-architecture/test"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
@@ -50,9 +51,11 @@ func TestDraw(t *testing.T) {
 	sg := mock_domain.NewMockSeedGenerator(ctrl)
 	sg.EXPECT().New().Return(int64(1000))
 
-	controller := controller.NewGacha(gachaRep, itemRep, sg)
+	p := mock_api.NewMockPayment(ctrl)
+	p.EXPECT().Buy(100).Return(nil).Times(1)
 
-	gachaId := domain.NewGachaId(1)
+	controller := controller.NewGacha(gachaRep, itemRep, sg, p)
+
 	expected := domain.NewItem(
 		domain.NewItemId(9),
 		"item9",
@@ -60,7 +63,7 @@ func TestDraw(t *testing.T) {
 	)
 
 	// Act
-	act, err := controller.Draw(context.Background(), gachaId)
+	act, err := controller.Draw(context.Background(), domain.NewGachaId(1))
 	if err != nil {
 		t.Fatal(err)
 	}

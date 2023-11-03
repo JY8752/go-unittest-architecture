@@ -60,3 +60,11 @@ tasks:
         --database "mysql://$MYSQL_USER:$MYSQL_PASS@tcp($MYSQL_HOST:$MYSQL_PORT)/$MYSQL_DBNAME"
         -verbose force {{.CLI_ARGS}}
     desc: 'Execute force migration version.Migration version must be specified as an argument.ex)task migrate:force -- 2'
+  generate:
+    cmds:
+      - go generate ./...
+    desc: 'execute `go generate` command. generate mock by `gomock` and di by `wire`.'
+  generate:di:
+    cmds: 
+      - wire gen
+    desc: 'execute `wire gen` command.'
