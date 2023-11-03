@@ -68,3 +68,11 @@ tasks:
     cmds: 
       - wire gen
     desc: 'execute `wire gen` command.'
+  test:golden:
+    cmds:
+      - go test -tags=e2e -v ./... -update -clean
+    desc: 'update golden file.'
+  test:unit:
+    cmds:
+      - go test -tags=unit -v -count=1 ./...
+    desc: 'execute unit tests.'
