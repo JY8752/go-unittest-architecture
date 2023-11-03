@@ -1,5 +1,7 @@
 package domain
 
+//go:generate mockgen -source=$GOFILE -destination=../mocks/domain/mock_$GOFILE -package=mock_domain
+
 import "time"
 
 type SeedGenerator interface {

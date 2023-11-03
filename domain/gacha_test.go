@@ -1,3 +1,5 @@
+//go:build unit
+
 package domain_test
 
 import (
@@ -52,14 +54,13 @@ func TestDraw(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			// Arange
 			t.Parallel()
-			gacha := domain.NewGacha(newGachaItemWeights(tt.Weights))
+			gacha := domain.NewGacha(newGachaItemWeights(t, tt.Weights))
 			seed := int64(10)
 
 			// Act
 			itemId, err := gacha.Draw(seed)
 			if err != nil {
-				t.Error(err)
-				t.Fail()
+				t.Fatal(err)
 			}
 
 			// Asertion
@@ -68,7 +69,8 @@ func TestDraw(t *testing.T) {
 	}
 }
 
-func newGachaItemWeights(weights []int) domain.GachaItemWeights {
+func newGachaItemWeights(t *testing.T, weights []int) domain.GachaItemWeights {
+	t.Helper()
 	gachaItemWeights := make(domain.GachaItemWeights, len(weights))
 	for i, w := range weights {
 		gachaItemWeights[i] = struct {
