@@ -36,9 +36,7 @@ POST
 ```
 % curl -XPOST localhost:8080/gacha/1/draw | jq
 {
-  "id": {
-    "value": 2
-  },
+  "id": 2,
   "name": "item2",
   "rarity": "N"
 }
@@ -66,6 +64,11 @@ POST
 - [golang-migtate](https://github.com/golang-migrate/migrate) マイグレーション
 - [Taskfile](https://taskfile.dev/ja-JP/) タスクランナー
 - dotenv + direnv 環境変数の管理
+
+- [testify](https://github.com/stretchr/testify) アサーションに
+- [dockertest](https://github.com/ory/dockertest) 結合テスト用にDB準備
+- [gomock](https://github.com/uber-go/mock) モック
+- [goldie](https://github.com/sebdah/goldie) ゴールデンテスト
 
 - Go1.20
 - MySql
@@ -104,19 +107,34 @@ go install github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-mysql@latest
 brew install go-task
 ```
 
+### gomock
+
+#### install
+
+```
+go install go.uber.org/mock/mockgen@latest
+```
+
 ## Task
 
 ```
 % task
 task: Available tasks for this project:
-* hello:                 Hello Test Task.
-* db:connect:            Connect MySQL container.
-* db:run:                Run MySQL container.
-* db:stop:               Stop MySQL container.When stop, container remove.
-* migrate:create:        Create migration file.Migration name must be specified as an argument.ex) task migrate:create -- create_user_table
-* migrate:down:          Execution migration down.
-* migrate:force:         Execute force migration version.Migration version must be specified as an argument.ex)task migrate:force -- 2
-* migrate:up:            Execution migration up.
-* migrate:version:       Check current migration version.
+* generate:               execute `go generate` command. generate mock by `gomock` and di by `wire`.
+* hello:                  Hello Test Task.
+* db:connect:             Connect MySQL container.
+* db:run:                 Run MySQL container.
+* db:stop:                Stop MySQL container.When stop, container remove.
+* generate:di:            execute `wire gen` command.
+* migrate:create:         Create migration file.Migration name must be specified as an argument.ex) task migrate:create -- create_user_table
+* migrate:down:           Execution migration down.
+* migrate:force:          Execute force migration version.Migration version must be specified as an argument.ex)task migrate:force -- 2
+* migrate:up:             Execution migration up.
+* migrate:version:        Check current migration version.
+* test:all:               execute all tests.
+* test:e2e:               execute e2e tests.
+* test:integration:       execute integration tests.
+* test:unit:              execute unit tests.
+* update:golden:          update golden file.
 ```
 

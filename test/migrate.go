@@ -8,14 +8,14 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
-func Migrate(db *sql.DB) error {
+func Migrate(db *sql.DB, migrationsPath string) error {
 	driver, err := mysql.WithInstance(db, &mysql.Config{})
 	if err != nil {
 		return err
 	}
 
 	migrate, err := migrate.NewWithDatabaseInstance(
-		"file:///Users/yamanakajunichi/study/go-unittest-architecture/migrations",
+		"file://"+migrationsPath,
 		"mysql",
 		driver,
 	)

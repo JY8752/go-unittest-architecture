@@ -68,7 +68,7 @@ tasks:
     cmds: 
       - wire gen
     desc: 'execute `wire gen` command.'
-  test:golden:
+  update:golden:
     cmds:
       - go test -tags=e2e -v ./... -update -clean
     desc: 'update golden file.'
@@ -76,3 +76,15 @@ tasks:
     cmds:
       - go test -tags=unit -v -count=1 ./...
     desc: 'execute unit tests.'
+  test:integration:
+    cmds:
+      - go test -tags=integration -v -count=1 ./...
+    desc: 'execute integration tests.'
+  test:e2e:
+    cmds:
+      - go test -tags=e2e -v -count=1 ./...
+    desc: 'execute e2e tests.'
+  test:all:
+    cmds:
+      - go test -tags=unit,integration,e2e -v -count=1 ./...
+    desc: 'execute all tests.'

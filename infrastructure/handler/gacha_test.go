@@ -26,16 +26,22 @@ import (
 )
 
 const (
-	goldenDir = "../../testdata/golden/"
+	goldenDir      = "../../testdata/golden/"
+	migrationsPath = "../../migrations"
 )
 
 var db *sql.DB
 
 func TestMain(m *testing.M) {
-	container := test.RunMySQLContainer()
+	container, err := test.RunMySQLContainer()
+	if err != nil {
+		container.Close()
+		log.Fatal(err)
+	}
+
 	db = container.DB
 
-	if err := test.Migrate(db); err != nil {
+	if err := test.Migrate(db, migrationsPath); err != nil {
 		container.Close()
 		log.Fatal(err)
 	}

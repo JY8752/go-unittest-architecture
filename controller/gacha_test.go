@@ -15,18 +15,26 @@ import (
 	mock_api "github.com/JY8752/go-unittest-architecture/mocks/api"
 	mock_domain "github.com/JY8752/go-unittest-architecture/mocks/domain"
 	"github.com/JY8752/go-unittest-architecture/test"
+	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )
 
+const migrationsPath = "../migrations"
+
 var db *sql.DB
 
 func TestMain(m *testing.M) {
-	container := test.RunMySQLContainer()
+	container, err := test.RunMySQLContainer()
+	if err != nil {
+		container.Close()
+		log.Fatal(err)
+	}
+
 	db = container.DB
 
-	if err := test.Migrate(db); err != nil {
+	if err := test.Migrate(db, migrationsPath); err != nil {
 		container.Close()
 		log.Fatal(err)
 	}
